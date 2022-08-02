@@ -17,11 +17,10 @@ def call(version="2.6.6", method=null, cl) {
         if (!fileExists("${rbenv}")) {
             print "Installing rbenv"
             sh """
-            git clone https://github.com/rbenv/rbenv.git ${rbenvRoot}
-            cd "${rbenvRoot}"
+            if cd ${rbenvRoot}; then git pull; else git clone https://github.com/rbenv/rbenv.git ${rbenvRoot} && cd "${rbenvRoot}"; fi
             src/configure --without-ssl && make -C src
             """
-            sh "git clone https://github.com/rbenv/ruby-build.git ${rbenvRoot}/plugins/ruby-build"
+            sh "if cd {rbenvRoot}/plugins/ruby-build; then git pull; else git clone https://github.com/rbenv/ruby-build.git ${rbenvRoot}/plugins/ruby-build; fi"
         } else {
             print "Updating rbenv & ruby-build"
             sh "cd ${rbenvRoot} && git pull"
